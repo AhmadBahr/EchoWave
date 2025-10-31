@@ -6,5 +6,5 @@
     { "src": "/(.*)", "dest": "MusicPlayer/wsgi.py" }
   ],
   "installCommand": "pip install -r requirements.txt",
-  "buildCommand": "python manage.py collectstatic --noinput"
+  "buildCommand": "python manage.py collectstatic --noinput && python manage.py migrate --noinput"
 }
