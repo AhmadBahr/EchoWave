@@ -1,0 +1,10 @@
+{
+  "builds": [
+    { "src": "MusicPlayer/wsgi.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "MusicPlayer/wsgi.py" }
+  ],
+  "installCommand": "pip install -r requirements.txt",
+  "buildCommand": "python manage.py collectstatic --noinput"
+}
