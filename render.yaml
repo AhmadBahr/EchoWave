@@ -7,7 +7,7 @@ services:
     startCommand: gunicorn MusicPlayer.wsgi --preload --workers=2 --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11
+        value: 3.11.9
       - key: DJANGO_SETTINGS_MODULE
         value: MusicPlayer.settings
       - key: DEBUG
