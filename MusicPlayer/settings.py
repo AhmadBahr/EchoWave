@@ -27,6 +27,15 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'CHANGE_ME_IN_PRODUCTION')
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = [h for h in os.getenv('ALLOWED_HOSTS', '*').split(',') if h]
+# Vercel convenience: include deployment host if provided
+_vercel_url = os.getenv('VERCEL_URL')
+if _vercel_url:
+    ALLOWED_HOSTS.append(_vercel_url)
+# Default wildcard for Vercel/Render domains
+if '.vercel.app' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('.vercel.app')
+if '.onrender.com' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('.onrender.com')
 
 
 # Application definition
@@ -83,10 +92,10 @@ DATABASES = {
     }
 }
 
-# Optional: override database via DATABASE_URL (e.g., Render Postgres)
+# Optional: override database via DATABASE_URL (e.g., Render Postgres / Vercel+Neon)
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
-    DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=False)
+    DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
 
 
 # Password validation
@@ -134,3 +143,10 @@ if os.path.isdir(_project_static_dir):
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_ROOT =os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# CSRF trusted origins (helpful for admin/logins on managed domains)
+_csrf_from_env = [o for o in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',') if o]
+CSRF_TRUSTED_ORIGINS = _csrf_from_env or [
+    'https://*.vercel.app',
+    'https://*.onrender.com',
+]
